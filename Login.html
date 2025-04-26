@@ -97,8 +97,12 @@ justify-content: center;" class="d-flex align-items-center justify-content-cente
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Login successful!');
-                // Redirect to another page maybe
+                // Store user data in session/local storage if needed
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('userRole', role);
+                
+                // Redirect to dashboard
+                window.location.href = 'Index.html';
             } else {
                 alert('Invalid credentials!');
             }
@@ -107,7 +111,7 @@ justify-content: center;" class="d-flex align-items-center justify-content-cente
             console.error('Error:', error);
         });
     });
-    </script>    
+</script>
 
 </body>
 </html>
