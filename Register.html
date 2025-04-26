@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Court Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body style="background: linear-gradient(135deg, #1c1c1c, #343a40);
+font-family: 'Poppins', sans-serif;
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;" class="d-flex align-items-center justify-content-center vh-100">
+
+    <div class="register-container">
+        <div class="card p-4 shadow-lg">
+            <h3 class="text-center text-dark mb-4">Create an Account</h3>
+
+            <form id="registerForm">
+
+                <!-- Role Selection -->
+                <div class="mb-3">
+                    <label for="role" class="form-label">Register as</label>
+                    <select class="form-select" id="role">
+                        <option value="lawyer">Lawyer</option>
+                        <option value="client">Client</option>
+                    </select>
+                </div>
+
+                <!-- Full Name -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter your full name">
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3 position-relative">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-3 position-relative">
+                    <label for="confirm-password" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="confirm-password" placeholder="Confirm your password">
+                        <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Register Button -->
+                <button type="submit"  class="btn btn-primary w-100">Register</button>
+
+                <!-- Already have an account? -->
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="Login.html" class="text-decoration-none">Login here</a></p>
+                </div>
+            </form>
+            <a href="Index.html">Home Page</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle Password Visibility
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            let passwordField = document.getElementById("password");
+            let icon = this.querySelector("i");
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
+
+        document.getElementById("toggleConfirmPassword").addEventListener("click", function () {
+            let passwordField = document.getElementById("confirm-password");
+            let icon = this.querySelector("i");
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
+    </script>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+        e.preventDefault(); // Prevent page refresh
+    
+        const data = {
+            role: document.getElementById("role").value,
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+            confirmPassword: document.getElementById("confirm-password").value
+        };
+    
+        // Basic check
+        if (data.password !== data.confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
+    
+        const response = await fetch("http://localhost:3000/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+    
+        const result = await response.json();
+        alert(result.message);
+    });
+    </script>    
+
+</body>
+</html>

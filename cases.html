@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cases - Court Management System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="d-flex">
+        <nav id="sidebar">
+            <h4 class="text-white text-center py-3">Court Management</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="Index.html" class="nav-link"><i class="fas fa-home"></i> <span class="sidebar-text">Dashboard</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="cases.html" class="nav-link"><i class="fas fa-balance-scale"></i> <span class="sidebar-text">Cases</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="hearings.html" class="nav-link active"><i class="fas fa-gavel"></i> <span class="sidebar-text">Hearings</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="documents.html" class="nav-link"><i class="fas fa-file-alt"></i> <span class="sidebar-text">Documents</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="payments.html" class="nav-link"><i class="fas fa-cog"></i> <span class="sidebar-text">Payments</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="Login.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> <span class="sidebar-text">Logout</span></a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="content p-4">
+            <nav class="navbar navbar-expand-lg navbar-light ">
+                <div class="container-fluid">
+                    <button class="btn btn-dark" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h4 class="ms-3">Cases Management</h4>
+                    <button class="btn btn-secondary ms-auto" data-bs-toggle="modal" data-bs-target="#addCaseModal">
+                        <i class="fas fa-plus"></i> Add Case
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Cases Table -->
+            <div class="container mt-4">
+                <h5>All Cases</h5>
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Case ID</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Assigned Lawyer</th>
+                            <th>Next Hearing</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>C-12345</td>
+                            <td>Criminal</td>
+                            <td><span class="badge bg-success">Resolved</span></td>
+                            <td>John Doe</td>
+                            <td>---</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>C-67890</td>
+                            <td>Civil</td>
+                            <td><span class="badge bg-danger">Pending</span></td>
+                            <td>Jane Smith</td>
+                            <td>March 15, 2025</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add Case Modal -->
+            <div class="modal fade" id="addCaseModal" tabindex="-1" aria-labelledby="addCaseModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCaseModalLabel">Add New Case</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label for="caseType" class="form-label">Case Type</label>
+                                    <select class="form-select" id="caseType">
+                                        <option value="criminal">Criminal</option>
+                                        <option value="civil">Civil</option>
+                                        <option value="family">Family</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="lawyer" class="form-label">Assign Lawyer</label>
+                                    <input type="text" class="form-control" id="lawyer" placeholder="Enter lawyer name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="nextHearing" class="form-label">Next Hearing Date</label>
+                                    <input type="date" class="form-control" id="nextHearing">
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Save Case</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar Toggle
+        document.getElementById("sidebarToggle").addEventListener("click", function () {
+            document.getElementById("sidebar").classList.toggle("collapsed");
+        });
+    </script>
+
+</body>
+</html>
