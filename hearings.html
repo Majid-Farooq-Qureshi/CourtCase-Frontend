@@ -76,7 +76,7 @@
             background-color: gold;
         }
      
-
+    
         /* Sidebar */
         #sidebar {
             width: 250px;
@@ -180,7 +180,7 @@
             <!-- Hearings Table -->
             <div class="container mt-4">
                 <h5>All Hearings</h5>
-                <table class="table table-dark table-striped">
+                <table class="table table-dark table-striped" id="hearingsTable">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -192,17 +192,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>C-12345</td>
-                            <td>March 15, 2025</td>
-                            <td>Judge John</td>
-                            <td><span class="badge bg-warning">Scheduled</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
+                        <!-- Dynamic Data -->
                     </tbody>
                 </table>
             </div>
@@ -218,7 +208,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="addHearingForm">
                         <div class="mb-3">
                             <label for="caseID" class="form-label">Case ID</label>
                             <input type="text" class="form-control" id="caseID" placeholder="Enter Case ID">
@@ -241,26 +231,113 @@
     <!-- Bootstrap & FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    <script>
-        // Sidebar Toggle
-        document.getElementById("sidebarToggle").addEventListener("click", function () {
-            let sidebar = document.getElementById("sidebar");
-            sidebar.classList.toggle("collapsed");
-        });
+<!-- [unchanged HEAD section: skipped here for brevity, but it's fine] -->
 
-        // Initialize Calendar
-        document.addEventListener("DOMContentLoaded", function () {
-            var calendarEl = document.getElementById("calendar");
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: "dayGridMonth",
-                events: [
-                    { title: "Hearing - C-12345", start: "2025-03-15" },
-                    { title: "Hearing - C-67890", start: "2025-03-20" }
-                ]
-            });
-            calendar.render();
+<script>
+    let calendar; // Keep reference outside
+
+    // Sidebar Toggle
+    document.getElementById("sidebarToggle").addEventListener("click", function () {
+        let sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("collapsed");
+    });
+
+    // Fetch and display hearings from backend
+    function fetchHearings() {
+        fetch("http://localhost:3000/hearings")
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector("#hearingsTable tbody");
+                tableBody.innerHTML = ""; // Clear old data
+
+                const calendarEvents = [];
+
+                data.forEach((hearing, index) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${hearing.case_id}</td>
+                        <td>${hearing.hearing_date}</td>
+                        <td>${hearing.judge}</td>
+                        <td><span class="badge bg-warning">${hearing.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+
+                    calendarEvents.push({
+                        title: `Hearing - ${hearing.case_id}`,
+                        start: hearing.hearing_date
+                    });
+                });
+
+                // Render Calendar (only once)
+                renderCalendar(calendarEvents);
+            })
+            .catch(error => console.error("Error fetching hearings:", error));
+    }
+
+    // Render Calendar
+    function renderCalendar(events) {
+        if (calendar) calendar.destroy(); // Destroy existing one if present
+
+        const calendarEl = document.getElementById("calendar");
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: "dayGridMonth",
+            events: events
         });
-    </script>
+        calendar.render();
+    }
+
+    // Submit new hearing
+    document.getElementById("addHearingForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        const case_id = document.getElementById("caseID").value.trim();
+        const hearing_date = document.getElementById("hearingDate").value;
+        const judge = document.getElementById("judgeName").value.trim();
+
+        if (!case_id || !hearing_date || !judge) {
+            alert("All fields are required.");
+            return;
+        }
+
+        const newHearing = {
+            case_id,
+            hearing_date,
+            judge,
+            status: "Scheduled"
+        };
+
+        fetch("http://localhost:3000/hearings", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(newHearing)
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Failed to schedule hearing");
+                return response.json();
+            })
+            .then(() => {
+                document.getElementById("addHearingForm").reset();
+                const modal = bootstrap.Modal.getInstance(document.getElementById("addHearingModal"));
+                modal.hide();
+                fetchHearings();
+                alert("Hearing scheduled successfully!");
+            })
+            .catch(error => {
+                console.error("Error posting hearing:", error);
+                alert("Error scheduling hearing.");
+            });
+    });
+
+    // Initial fetch
+    document.addEventListener("DOMContentLoaded", fetchHearings);
+</script>
+
 
 </body>
 </html>
